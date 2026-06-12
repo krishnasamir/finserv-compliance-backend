@@ -1,0 +1,92 @@
+[
+  {
+    "id": "txn-large-walkin-cash",
+    "transaction": "A walk-in customer with no account requests a cash transaction of ₹75,000 at a bank branch.",
+    "expected_risk": "high",
+    "expected_regulations": ["RBI KYC - occasional transaction above ₹50,000 threshold requires full KYC"],
+    "expected_actions": ["Carry out full KYC / customer identification before processing", "Obtain OVD and PAN"],
+    "source_rule": "KYC09062025 Q2(b): walk-in occasional transaction >= ₹50,000 triggers KYC",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-cross-border-transfer",
+    "transaction": "An international money transfer of $20,000 is requested by a walk-in customer to a beneficiary overseas.",
+    "expected_risk": "high",
+    "expected_regulations": ["RBI KYC - international money transfer requires KYC regardless of amount"],
+    "expected_actions": ["Perform KYC / customer identification", "Verify source of funds and beneficiary"],
+    "source_rule": "KYC09062025 Q2(c): any international money transfer triggers KYC",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-dd-against-cash-high",
+    "transaction": "A customer wants to purchase a Demand Draft for ₹60,000 by paying cash.",
+    "expected_risk": "high",
+    "expected_regulations": ["RBI KYC - DD/Pay Order of ₹50,000 and above cannot be issued against cash"],
+    "expected_actions": ["Reject cash purchase", "Require debit to customer account or payment by cheque"],
+    "source_rule": "KYC09062025 Q30: DD/PO >= ₹50,000 must be by account debit or cheque, not cash",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-dd-against-cash-low",
+    "transaction": "A customer wants to purchase a Demand Draft for ₹20,000 by paying cash.",
+    "expected_risk": "low",
+    "expected_regulations": ["RBI KYC - DD/Pay Order below ₹50,000 may be purchased against cash"],
+    "expected_actions": ["Process the transaction; amount is below the cash threshold"],
+    "source_rule": "KYC09062025 Q30: DD/PO below ₹50,000 can be purchased against cash",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-account-open-no-ovd",
+    "transaction": "An individual wants to open a savings account but does not possess any Officially Valid Document (OVD).",
+    "expected_risk": "medium",
+    "expected_regulations": ["RBI KYC - Small Account provisions for customers without an OVD"],
+    "expected_actions": ["Open as a Small Account with self-attested photograph and officer certification", "Apply the 12-month operational limit and conditions"],
+    "source_rule": "KYC09062025 Q6: Small Account when customer has no OVD",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-account-open-full-docs",
+    "transaction": "An individual opens a current account and provides a passport and PAN card.",
+    "expected_risk": "low",
+    "expected_regulations": ["RBI KYC - individual account opening with valid OVD and PAN"],
+    "expected_actions": ["Proceed with account opening; required OVD and PAN provided"],
+    "source_rule": "KYC09062025 Q5: passport is a valid OVD; PAN required",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-stale-cheque",
+    "transaction": "A customer presents a banker's cheque dated five months ago for payment.",
+    "expected_risk": "medium",
+    "expected_regulations": ["RBI KYC - payment instruments presented beyond three months are not honoured"],
+    "expected_actions": ["Decline payment; instrument is beyond the three-month validity period"],
+    "source_rule": "KYC09062025 Q31: cheque/draft/pay order invalid beyond 3 months from issuance",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-doubtful-identity",
+    "transaction": "A bank suspects that the identity documents submitted by an existing customer may not be authentic.",
+    "expected_risk": "high",
+    "expected_regulations": ["RBI KYC - KYC must be re-performed when authenticity or adequacy of customer data is in doubt"],
+    "expected_actions": ["Re-perform KYC / customer due diligence", "Obtain fresh valid documents"],
+    "source_rule": "KYC09062025 Q2(d): doubt about authenticity/adequacy triggers KYC",
+    "expected_status": "assessed"
+  },
+  {
+    "id": "txn-ambiguous-insufficient",
+    "transaction": "A payment was processed yesterday.",
+    "expected_risk": null,
+    "expected_regulations": [],
+    "expected_actions": ["Request missing details: amount, counterparty, jurisdiction, instrument type"],
+    "source_rule": "Insufficient information - sufficiency gate should fire",
+    "expected_status": "needs_review"
+  },
+  {
+    "id": "txn-mifid-out-of-scope",
+    "transaction": "A retail client in Germany is sold a complex structured derivative without an appropriateness assessment under MiFID II.",
+    "expected_risk": null,
+    "expected_regulations": [],
+    "expected_actions": ["Flag for human review - MiFID II rules are not in the ingested corpus"],
+    "source_rule": "Out-of-corpus: no MiFID II document ingested; should not fabricate an assessment",
+    "expected_status": "needs_review"
+  }
+]

@@ -56,25 +56,16 @@ class Answer:
     citations: list[Citation] = field(default_factory=list)
 
 
-def answer(query: str) -> Answer:
-    """Full RAG pipeline: retrieve → rerank → compress → generate via Ollama.
+def _pipeline(query: str) -> tuple[Answer, list[str]]:
+    """Core RAG: retrieve → rerank → compress → generate. Returns (Answer, context_texts).
 
-    Raises EmptyQueryError for blank or whitespace-only queries.
-    Returns an 'insufficient context' Answer when retrieval yields nothing
-    above the confidence threshold — never fabricates.
+    Assumes query is already validated (non-empty). Called by answer() and answer_for_eval().
     """
     from src.retrieval.reranker import compress, rerank
     from src.retrieval.search import (
         dense_search, keyword_search, reciprocal_rank_fusion,
     )
 
-    # ── Guard: empty / whitespace-only query ─────────────────────────────────
-    if not query or not query.strip():
-        raise EmptyQueryError(f"Query must be non-empty; got: {query!r}")
-
-    # ── Single-pass: embed query once, run both search modes at full k ────────
-    # Avoids the old pattern of a k=1 probe + hybrid_search, which re-embedded
-    # the query and made 3 DB round-trips instead of 2.
     dense_results   = dense_search(query, k=settings.retrieval_top_k)
     keyword_results = keyword_search(query, k=settings.retrieval_top_k)
 
@@ -84,10 +75,6 @@ def answer(query: str) -> Answer:
     # comparing RRF scores against the threshold would refuse every valid query.
     # The gate MUST use the raw cosine score from dense_search.
     best_cosine = dense_results[0].score if dense_results else 0.0
-
-    # A keyword hit also clears the gate, but ts_rank must be non-trivial to
-    # avoid spurious partial-token matches inside compound strings such as
-    # "xyzzy_nonexistent_regulation_clause_99999".
     has_quality_keyword = (
         len(keyword_results) > 0
         and keyword_results[0].score >= 0.05
@@ -100,7 +87,7 @@ def answer(query: str) -> Answer:
             settings.retrieval_score_threshold,
             keyword_results[0].score if keyword_results else "n/a",
         )
-        return Answer(text=_INSUFFICIENT_CONTEXT_TEXT, citations=[])
+        return Answer(text=_INSUFFICIENT_CONTEXT_TEXT, citations=[]), []
 
     # ── RRF fusion — ranking only, NOT for threshold decisions ────────────────
     candidates = reciprocal_rank_fusion(
@@ -109,13 +96,14 @@ def answer(query: str) -> Answer:
         rrf_k=settings.hybrid_rrf_k,
     )
     if not candidates:
-        return Answer(text=_INSUFFICIENT_CONTEXT_TEXT, citations=[])
+        return Answer(text=_INSUFFICIENT_CONTEXT_TEXT, citations=[]), []
 
     reranked = rerank(query, candidates)[: settings.rerank_top_n]
     context_chunks = compress(query, reranked)
+    context_texts = [c.text for c in context_chunks]
 
     # ── Build prompt with numbered REF labels ─────────────────────────────────
-    ref_map: dict[int, object] = {}  # ref_number → Chunk
+    ref_map: dict[int, object] = {}
     blocks: list[str] = []
     for i, c in enumerate(context_chunks, start=1):
         ref_map[i] = c
@@ -160,4 +148,29 @@ def answer(query: str) -> Answer:
             for c in context_chunks
         ]
 
-    return Answer(text=answer_text, citations=citations)
+    return Answer(text=answer_text, citations=citations), context_texts
+
+
+def answer(query: str) -> Answer:
+    """Full RAG pipeline: retrieve → rerank → compress → generate via Ollama.
+
+    Raises EmptyQueryError for blank or whitespace-only queries.
+    Returns an 'insufficient context' Answer when retrieval yields nothing
+    above the confidence threshold — never fabricates.
+    """
+    if not query or not query.strip():
+        raise EmptyQueryError(f"Query must be non-empty; got: {query!r}")
+    ans, _ = _pipeline(query)
+    return ans
+
+
+def answer_for_eval(query: str) -> tuple[Answer, list[str]]:
+    """Like answer(), but also returns the retrieved context texts for eval scoring.
+
+    Returns (Answer, context_texts) where context_texts is an empty list when
+    the relevance gate closes (out-of-corpus / low-confidence queries).
+    Used by src/eval/runner.py — avoids re-embedding the query a second time.
+    """
+    if not query or not query.strip():
+        raise EmptyQueryError(f"Query must be non-empty; got: {query!r}")
+    return _pipeline(query)

@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     eval_report_path: Path = Path("./eval_report.md")
 
     # Eval
-    eval_judge_model: str = "qwen2.5:3b"
+    eval_judge_model: str = "mistral:7b"
 
 
 settings = Settings()

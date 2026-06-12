@@ -1,0 +1,90 @@
+[
+  {
+    "id": "rbi-kyc-definition",
+    "category": "single-framework",
+    "framework": "RBI-KYC",
+    "question": "What is Know Your Customer (KYC) and what purpose does it serve?",
+    "ground_truth": "KYC is the process by which a Regulated Entity, such as a bank, obtains and verifies information on a customer's identity, address, nature of business, and financial status. Its purpose is to ensure the entity knows who it is dealing with and that its services are not misused for money laundering, terrorist financing, or proliferation financing.",
+    "expected_sources": ["KYC09062025", "MD18KYCF6E92C82E1E1419D87323E3869BC9F13"]
+  },
+  {
+    "id": "rbi-kyc-when-mandatory",
+    "category": "single-framework",
+    "framework": "RBI-KYC",
+    "question": "When is a Regulated Entity required to carry out KYC under RBI guidelines?",
+    "ground_truth": "KYC must be carried out when commencing an account-based relationship, when a walk-in customer conducts an occasional transaction of ₹50,000 or more (whether single or connected), for any international money transfer, when the entity doubts the authenticity or adequacy of previously obtained customer data, and when selling its own or third-party products above ₹50,000.",
+    "expected_sources": ["KYC09062025", "MD18KYCF6E92C82E1E1419D87323E3869BC9F13"]
+  },
+  {
+    "id": "rbi-kyc-individual-documents",
+    "category": "single-framework",
+    "framework": "RBI-KYC",
+    "question": "What documents are required for opening a bank account by an individual under RBI KYC rules?",
+    "ground_truth": "An individual must provide one Officially Valid Document (OVD) showing name and address — such as a passport, driving licence, proof of Aadhaar, Voter's Identity Card, NREGA job card, or National Population Register letter — together with PAN (or Form 60), and any further documents the entity needs regarding the nature of business and financial status.",
+    "expected_sources": ["KYC09062025", "MD18KYCF6E92C82E1E1419D87323E3869BC9F13"]
+  },
+  {
+    "id": "rbi-kyc-small-account",
+    "category": "single-framework",
+    "framework": "RBI-KYC",
+    "question": "What is a 'Small Account' under RBI KYC rules and how long can it operate?",
+    "ground_truth": "A Small Account can be opened when a customer does not possess an OVD. The bank obtains a self-attested photograph and a designated officer certifies that the person signed or affixed a thumb impression in their presence. It remains operational initially for twelve months, subject to the conditions in the Master Direction on KYC.",
+    "expected_sources": ["KYC09062025", "MD18KYCF6E92C82E1E1419D87323E3869BC9F13"]
+  },
+  {
+    "id": "rbi-kyc-periodic-updation",
+    "category": "single-framework",
+    "framework": "RBI-KYC",
+    "question": "How often must periodic updation of KYC (re-KYC) be carried out for different customer risk categories?",
+    "ground_truth": "Periodic updation of KYC must be carried out at least once every two years for high-risk customers, every eight years for medium-risk customers, and every ten years for low-risk customers. The periodicity depends on the customer's risk categorisation, and entities may adopt additional or more frequent measures under their internal KYC policy.",
+    "expected_sources": ["KYC09062025", "MD18KYCF6E92C82E1E1419D87323E3869BC9F13"]
+  },
+  {
+    "id": "rbi-kyc-vcip",
+    "category": "single-framework",
+    "framework": "RBI-KYC",
+    "question": "What is the Video-based Customer Identification Process (V-CIP) under RBI KYC rules?",
+    "ground_truth": "V-CIP is an alternate method of customer identification using facial recognition and customer due diligence, conducted through a secure, live, consent-based audio-visual interaction between an authorised official and the customer. It removes the need for a physical branch visit but is treated on par with face-to-face identification, and assisted V-CIP via Business Correspondents is permitted at the customer end.",
+    "expected_sources": ["KYC09062025", "MD18KYCF6E92C82E1E1419D87323E3869BC9F13"]
+  },
+  {
+    "id": "basel3-cet1-retained-earnings",
+    "category": "single-framework",
+    "framework": "Basel III",
+    "question": "Are retained earnings part of Common Equity Tier 1 capital under Basel III?",
+    "ground_truth": "Yes. Retained earnings and other reserves as stated on the balance sheet are positive components of Common Equity Tier 1. To arrive at CET1, these positive components are then adjusted by the regulatory adjustments set out in paragraphs 66 to 90 of the Basel III rules text.",
+    "expected_sources": ["bcbs211", "d424", "defcap_b3"]
+  },
+  {
+    "id": "basel3-at1-incentive-to-redeem",
+    "category": "single-framework",
+    "framework": "Basel III",
+    "question": "What features are considered an incentive to redeem for Additional Tier 1 capital instruments under Basel III?",
+    "ground_truth": "Examples of an incentive to redeem include a call option combined with an increase in the instrument's credit spread if the call is not exercised, a call option combined with a requirement or investor option to convert into shares if not called, and a call option combined with a change in reference rate where the credit spread over the second reference rate exceeds the initial payment rate less the swap rate. A conversion from fixed to floating rate with a call but no credit-spread increase is not, by itself, an incentive to redeem.",
+    "expected_sources": ["bcbs211"]
+  },
+  {
+    "id": "basel3-at1-writedown-trigger",
+    "category": "single-framework",
+    "framework": "Basel III",
+    "question": "What is the minimum trigger level for write-down or conversion of Additional Tier 1 instruments classified as liabilities under Basel III?",
+    "ground_truth": "Additional Tier 1 instruments accounted for as liabilities must have a trigger level for write-down or conversion of at least 5.125% Common Equity Tier 1 (CET1). The write-down or conversion must generate CET1, and the aggregate amount converted on breaching the trigger must be at least enough to restore the bank's CET1 ratio to the trigger level, or the full principal if that is not possible.",
+    "expected_sources": ["bcbs211"]
+  },
+  {
+    "id": "mifid-ii-out-of-corpus",
+    "category": "out-of-corpus",
+    "framework": "none",
+    "question": "Under MiFID II, what is the appropriateness assessment required before selling a complex product to a retail client?",
+    "ground_truth": "Insufficient context — MiFID II appropriateness-assessment requirements are not covered in the available regulatory corpus, which contains only Basel III capital materials and RBI KYC materials. No MiFID II document has been ingested.",
+    "expected_sources": []
+  },
+  {
+    "id": "glass-steagall-out-of-corpus",
+    "category": "out-of-corpus",
+    "framework": "US-Law",
+    "question": "What provisions of the Glass-Steagall Act separated commercial and investment banking activities in the United States, and when was it repealed?",
+    "ground_truth": "Insufficient context — the Glass-Steagall Act (US Banking Act of 1933) is not covered in the available regulatory corpus, which contains only Basel III capital adequacy, RBI KYC, and MiFID II materials.",
+    "expected_sources": []
+  }
+]

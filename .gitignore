@@ -1,3 +1,33 @@
-node_modules/
+# Environment
+.env
+.venv/
+venv/
+
+# Regulated data — never commit PDFs or ingested source text
+data/*.pdf
+data/*.PDF
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
 dist/
 build/
+
+# Tests & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# DeepEval
+.deepeval/
+
+# IDE
+.vscode/
+.idea/
+
+# Node (if any tooling added)
+node_modules/

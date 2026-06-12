@@ -135,6 +135,27 @@ def loaded_corpus(fixture_pdfs: list[tuple[Path, str, str]]):
     return all_chunks
 
 
+# ── DB-level fixtures ─────────────────────────────────────────────────────────
+
+@pytest.fixture(scope="session")
+def all_ingested_keys(loaded_corpus):
+    """(doc_id, section_id) pairs for ALL chunks in the database.
+
+    Covers both the 3 fixture chunks loaded by loaded_corpus and any real
+    corpus chunks ingested by `python -m src.ingestion.run`.  Used by AT-5 so
+    citations from the real corpus don't fail the resolution check.
+    """
+    from sqlalchemy import create_engine
+    from sqlalchemy import text as sa_text
+
+    from config import settings as _s
+
+    engine = create_engine(_s.database_url, pool_pre_ping=True)
+    with engine.connect() as conn:
+        rows = conn.execute(sa_text("SELECT doc_id, section_id FROM chunks")).fetchall()
+    return {(r.doc_id, r.section_id) for r in rows}
+
+
 # ── Convenience fixtures ──────────────────────────────────────────────────────
 
 @pytest.fixture()
