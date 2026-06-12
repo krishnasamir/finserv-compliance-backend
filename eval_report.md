@@ -62,8 +62,3 @@ failures across 85 total judge HTTP calls (~13% failure rate). These are scored 
 ### Out-of-corpus refusals (correct behaviour)
 - **Q10 — MiFID II**: System correctly declined. No MiFID II document ingested.
 - **Q11 — Glass-Steagall**: System correctly declined. US banking law not in corpus.
-
-### Recommendation
-Replace judge with a larger Ollama model (e.g. `llama3:70b` or `mixtral:8x7b`) to eliminate
-invalid-JSON failures. The RAG pipeline itself performs correctly — all 9 in-corpus questions
-returned cited answers; both out-of-corpus questions triggered the graceful-degradation path.
